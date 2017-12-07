@@ -52,22 +52,6 @@ Lo que tienes que hacer:
 + Genera un k-means ocupando el resto de las variables
 + Genera un dendograma con el resto de las variables
 
-**Preguntas:** 
-
-1. k-means
-    + Cuántos grupos generaste, justificación 
-    + Características de cada grupo
-    + Centroides obtenidos
-    + ¿Cuántos elementos hay por grupo? 
-    + ¿Los grupos están balanceados? 
-2. Dendogramas
-    + Ocupa *average-linkage*
-    + De acuerdo al $k$ obtenido en la pregunta anterior genera el corte al dendograma y genera los grupos
-    + ¿Cuántos elementos hay por grupo? 
-    + ¿Los grupos están balanceados? 
-    + Características de cada grupo
-3. Diferencias entre las características de cada grupo
-
 
 ###Introducción 
 
@@ -77,17 +61,181 @@ Se tomarán
 
 ###Datos
 
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(ggdendro)
+library(knitr)
+library(ggdendro)
+library(stringr)
+setwd(".")
+
+set.seed(14)
+
+data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
+
+#Eliminamos 2000 valores vacíos que tenía la base de datos para la variable pw2.5
+data <- na.omit(data)
+data <- data[,-c(1,4)]
+data$year <- factor(data$year)
+data$month <- factor(data$month)
+
+
+variables <- names(data)
+
+clases <- sapply(data, function(x) class(x))
+
+#variables categoricas y numericas
+categoricas <- data[,which(clases %in% c("character", "factor"))]
+numericas <- data[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(data)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(data)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacíos
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#Función de Moda
+Moda <- function(x){
+  if (class(x) %in% c("character", "factor")) {
+    table(x) %>%
+      which.max() %>%
+      names()
+  }
+  else {
+    table(round(x, 2)) %>%
+      which.max() %>%
+      names()
+  }
+}
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#Mínimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#Máximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#Desviación estándar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+```
+
+**Estadística general, Data Profiling**
+
+```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+```
+
+Podemos decir del PM2.5 que es una variable numérica que va del 0 al 994, con una desviación estándar de 92. Además, la media de esta variable es 98, lo que significa que los números mayores a 200 deberían ser alarmantes. 
+
+```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
+
+kable(df_categoric, format.args = list(big.mark=",", scientific=F))
+```
+
+Tenemos 5 años, con una moda del 2013, 12 meses con una moda en Julio y 4 valores para cbwd con una moda de SE (South East).
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+
+plot(data)
+```
+
 
 ###K-means
+
+```{r echo = TRUE, warning=FALSE, message=FALSE}
+
+data <- data[,-c(1,2)]
+
+
+
+```
 
 
 
 ###Dendograma
 
-
+Nota: "Ocupa average linkeage"
 
 ###Preguntas
 
+1. k-means
+
+    + Cuántos grupos generaste, justificación 
+    + Características de cada grupo
+    + Centroides obtenidos
+    + ¿Cuántos elementos hay por grupo? 
+    + ¿Los grupos están balanceados? 
+    
+    
+2. Dendogramas
+
+    + Ocupa *average-linkage*
+    + De acuerdo al $k$ obtenido en la pregunta anterior genera el corte al dendograma y genera los grupos
+    + ¿Cuántos elementos hay por grupo? 
+    + ¿Los grupos están balanceados? 
+    + Características de cada grupo
+    
+    
+3. Diferencias entre las características de cada grupo
 
 
 ###Conclusiones
