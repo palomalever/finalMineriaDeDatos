@@ -1,0 +1,94 @@
+---
+title: "Examen_Final_DIP"
+author: '150074'
+date: "6/12/2017"
+output: html_document
+---
+
+#Examen Final Minería de Datos Agosto Diciembre 2017
+###14   David Alcalde
+###150074 Iovannah Rudoy
+###150553 Paloma Lever
+
+*** 
+
+## Agenda {.tabset .tabset-fade .tabset-pills}
+
++ Tema
++ Introducción
++ Datos
++ K-means
++ Dendograma
++ Preguntas
++ Conclusiones
+
+*** 
+
+###Tema
+
+A nuestro equipo le fue asignado el siguiente tema (tema 2) en la clase del 4 de Diciembre del 2017
+
+#### Agrupación
+
+Cuentas con un set de datos que contiene información relacionada a la contaminación de Beijing -**PM2.5**- del 1 de enero de 2010 al 31 de diciembre del 2014. El set cuenta con las siguientes variables 
+
++ **No:** row number
++ **year:** year of data in this row
++ **month:** month of data in this row
++ **day:** day of data in this row 
++ **hour:** hour of data in this row
++ **pm2.5:** PM2.5 concentration ($ug/m^3$)
++ **DEWP:** Dew Point 
++ **TEMP:** Temperature
++ **PRES:** Pressure (hPa)
++ **cbwd:** Combined wind direction
++ **lws:** Cumulated wind speed (m/s)
++ **ls:** Cumulated hours or snow
++ **lr:** Cumulated hours of rain
+
+Lo que tienes que hacer: 
+
++ Elimina del set las variables: `No`, `year`, `month`, `day`
++ Genera un k-means ocupando el resto de las variables
++ Genera un dendograma con el resto de las variables
+
+**Preguntas:** 
+
+1. k-means
+    + Cuántos grupos generaste, justificación 
+    + Características de cada grupo
+    + Centroides obtenidos
+    + ¿Cuántos elementos hay por grupo? 
+    + ¿Los grupos están balanceados? 
+2. Dendogramas
+    + Ocupa *average-linkage*
+    + De acuerdo al $k$ obtenido en la pregunta anterior genera el corte al dendograma y genera los grupos
+    + ¿Cuántos elementos hay por grupo? 
+    + ¿Los grupos están balanceados? 
+    + Características de cada grupo
+3. Diferencias entre las características de cada grupo
+
+
+###Introducción 
+
+Se quieren realizar dos tipos de modelos de agrupación para un set de datos que contiene información relevante respecto al nivel de contaminación de la ciudad de Beijing en cinco años (2010-2014). 
+
+Se tomarán 
+
+###Datos
+
+
+###K-means
+
+
+
+###Dendograma
+
+
+
+###Preguntas
+
+
+
+###Conclusiones
+
