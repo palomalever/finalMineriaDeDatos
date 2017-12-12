@@ -38,7 +38,7 @@ Cuentas con un set de datos que contiene informaciÃ³n relacionada a la contamina
 + **day:** day of data in this row 
 + **hour:** hour of data in this row
 + **pm2.5:** PM2.5 concentration ($ug/m^3$)
-+ **DEWP:** Dew Point 
++ **DEWP:** Dew Point, it's a more accurate way of measuring the humidity and comfort of air,
 + **TEMP:** Temperature
 + **PRES:** Pressure (hPa)
 + **cbwd:** Combined wind direction
@@ -55,25 +55,43 @@ Lo que tienes que hacer:
 
 ###IntroducciÃ³n 
 
-Se quieren realizar dos tipos de modelos de agrupaciÃ³n para un set de datos que contiene informaciÃ³n relevante respecto al nivel de contaminaciÃ³n de la ciudad de Beijing en cinco aÃ±os (2010-2014). 
+La contaminación en el medio ambiente es una consecuencia inmediata de la industrialización y la tecnificación de la vida, a lo largo de los años ha dejado una capa cada vez más densa en las ciudades más pobladas del mundo y se ha convertido en una amenaza para la salud pública y no se han hecho los suficientes cambios en la industria para poder combatir exitosamente este fenómeno.
+Una investigación del Colegio del Medio Ambiente de la Universidad de Nanjing relacionó la contaminación con casi un tercio de todas las muertes que se producen en China, ubicando a la polución en el mismo nivel que fumar tabaco como amenaza para la salud pública
 
-Se tomarÃ¡n 
+Teniendo un set de datos que contiene información relevante respecto al nivel de contaminación de la ciudad de Behin en 5 años, el objetivo es lograr su agrupación mediante el uso de dos métodos no supervisados de agrpación que son k-means clustering y dendogramas para así poder centrar nuestro análisis de estos en grupos que compartan ciertas características entre sí y conocer qué es lo que los diiferencia
+
 
 ###Datos
 
 ```{r echo = FALSE, warning = FALSE, message=FALSE}
 library(readr)
-library(dplyr)
+library(tidyverse)
 library(ggplot2)
-library(ggdendro)
-library(knitr)
+library(plotly)
+library(stringr)
+library(dplyr)
+library(class) 
+library(C50)
+library(ROCR)
+library(caret) 
+library(knitr) 
+library(tidyr)
+library(rpart)
+library(MLmetrics)
+library(lubridate)
 library(ggdendro)
 library(stringr)
 setwd(".")
+```
 
+```{r}
 set.seed(14)
+#Iovannah
+#data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
+#Paloma
 
-data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
+data <- read_csv("../data/pollution.csv")
+summary(data)
 
 #Eliminamos 2000 valores vacÃ­os que tenÃ­a la base de datos para la variable pw2.5
 data <- na.omit(data)
@@ -83,9 +101,15 @@ data$month <- factor(data$month)
 
 
 variables <- names(data)
+rows <- nrow(data)
 
 clases <- sapply(data, function(x) class(x))
+```
 
+Como podemos observar del primer resumen, pm2.5 es la variable con más NA's. De un set que cuenta con `r rows` observaciones, 2067 son NA's en pm2.5, ese es el `r (2067/rows * 100)`% de los datos, que es muy chico, por lo que para nuestro análisis futuro vamos a quitarlo utilizando el comando na.omit().
+
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
 #variables categoricas y numericas
 categoricas <- data[,which(clases %in% c("character", "factor"))]
 numericas <- data[,-which(clases %in% c("character", "factor"))]
@@ -184,25 +208,28 @@ names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
 kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 ```
 
-Podemos decir del PM2.5 que es una variable numÃ©rica que va del 0 al 994, con una desviaciÃ³n estÃ¡ndar de 92. AdemÃ¡s, la media de esta variable es 98, lo que significa que los nÃºmeros mayores a 200 deberÃ­an ser alarmantes. 
+Podemos decir del PM2.5 que es una variable numÃ©rica que va del 0 al 994, con una desviaciÃ³n estÃ¡ndar de 92. AdemÃ¡s, la media de esta variable es 98, lo que significa que los nÃºmeros mayores a 200 deberÃ­an ser alarmantes que estan contenidos en menos del 25% de los datos. 
+La temperatura en Beijing varía mucho a lo largo del año y en las distintas regions, va de  -19°C a 42°C.
+DEWP es el grado de humedad,  va de 10° a 26° normalmente y cualquier valor arriba o abajo puede causar un gran disomfort para el ser humano ya que menor a 10°C incluso menor a 0°C puede ser demasaido seco o mayor a 30°C puede ser asfixiante. En Beijing vemos que va de -40° a 28° lo cual está relacionado con las teperaturas extremas a la sque llega a alcanzar.
+
 
 ```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
 
 kable(df_categoric, format.args = list(big.mark=",", scientific=F))
-```
+``` 
 
 Tenemos 5 aÃ±os, con una moda del 2013, 12 meses con una moda en Julio y 4 valores para cbwd con una moda de SE (South East).
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
-
-plot(data)
+data$cbwd <- as.factor(data$cbwd)
+#plot(data)
 ```
 
 
 ###K-means
-
+También podemos observar que los datos no están en la misma escala por lo que tendr
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
-
+#Quitamos los datos de  year yy month que fueron utilizados en el análisis
 data <- data[,-c(1,2)]
 
 
