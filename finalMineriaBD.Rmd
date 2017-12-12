@@ -224,7 +224,21 @@ Preparamos los datos
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
 #data$cbwd <- as.factor(as.numeric(data$cbwd))
 data <- data[,-c(1,2,8)] #Quitamos year, momnth, cbwd
+data1 <- data
+data1 %>%
+  gather(-pm2.5, key = "some_var_name", value = "numeric_values") %>%
+  ggplot(aes(x =  numeric_values, y =  pm2.5)) +
+    geom_point() +
+    facet_wrap(~ some_var_name, scales = "free")
+
 data_scale <- scale(data)
+
+data2 <- data_scale
+data2 %>%
+  gather(-pm2.5, key = "some_var_name", value = "numeric_values") %>%
+  ggplot(aes(x =  numeric_values, y =  pm2.5)) +
+    geom_point() +
+    facet_wrap(~ some_var_name, scales = "free")
 ```
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
 summary(data_scale)
@@ -237,14 +251,13 @@ También podemos observar que los datos no están en la misma escala por lo que te
 ```
 
 
-
 ###Dendograma
 
 Nota: "Ocupa average linkeage"
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
 distance_matrix <- dist(data)
-dendogram_complete <- hclust(distance_matrix,method="complete")
-ggdendrogram(dendogram_complete, rotate=F, size =2)
+#dendogram_complete <- hclust(distance_matrix,method="complete")
+#ggdendrogram(dendogram_complete, rotate=F, size =2)
 
 ```
 
