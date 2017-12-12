@@ -10,7 +10,7 @@ output: html_document
 ###150074 Iovannah Rudoy
 ###150553 Paloma Lever
 
-*** 
+ 
 
 ## Agenda {.tabset .tabset-fade .tabset-pills}
 
@@ -22,7 +22,7 @@ output: html_document
 + Preguntas
 + Conclusiones
 
-*** 
+
 
 ###Tema
 
@@ -87,19 +87,18 @@ setwd(".")
 ```{r warning=FALSE}
 set.seed(14)
 #Iovannah
-data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
-#Paloma
+#data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
 
-#data <- read_csv("../data/pollution.csv")
+#Paloma
+data <- read_csv("../data/pollution.csv")
 summary(data)
 
 #Eliminamos 2000 valores vacíos que tenía la base de datos para la variable pw2.5
 data <- na.omit(data)
-data <- data[,-c(1,4)]
+#Sin numero ni dia
+data<- data[,-c(1,4)]
 data$year <- factor(data$year)
 data$month <- factor(data$month)
-
-
 variables <- names(data)
 rows <- dim(data)[1]
 
@@ -204,7 +203,6 @@ names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
 
 **Estadística general, Data Profiling*
 ```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
-
 kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 ```
 
@@ -223,6 +221,7 @@ Tenemos 5 años, con una moda del 2013, 12 meses con una moda en Julio y 4 valor
 Preparamos los datos
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
 #data$cbwd <- as.factor(as.numeric(data$cbwd))
+data_previo <- data
 data <- data[,-c(1,2,8)] #Quitamos year, month, cbwd
 data1 <- data
 data1 %>%
@@ -332,9 +331,13 @@ ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Ir, y=data_clu
 
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
 
-data <- cbind(data,data_clustered$cluster)
-names(data) <- c("hour", "pm2.5", "DEWP", "TEMP", "PRES", "Iws", "Is", "Ir", "cluster")
+data <- cbind(data_previo,data_clustered$cluster)
 
+```
+
+```{r}
+names(data) <- c("year", "month" ,"hour", "pm2.5", "DEWP", "TEMP", "PRES","cbwd" ,"Iws", "Is", "Ir", "cluster")
+data$pm2.5 <- as.numeric(data$pm2.5)
 cluster1 <- filter(data,data$cluster == 1)
 cluster2 <- filter(data,data$cluster == 2)
 cluster3 <- filter(data,data$cluster == 3)
@@ -348,6 +351,7 @@ cluster7 <- filter(data,data$cluster == 7)
 Cluster 1
 
 ```{r echo = FALSE, warning = FALSE, message=FALSE}
+cluster1$pm2.5 <- as.numeric(cluster1$pm2.5)
 
 #variables categoricas y numericas
 categoricas <- cluster1[,which(clases %in% c("character", "factor"))]
