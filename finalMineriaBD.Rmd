@@ -220,19 +220,19 @@ kable(df_categoric, format.args = list(big.mark=",", scientific=F))
 
 Tenemos 5 a√±os, con una moda del 2013, 12 meses con una moda en Julio y 4 valores para cbwd con una moda de SE (South East).
 
+Preparamos los datos
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
-data$cbwd <- as.factor(data$cbwd)
-#plot(data)
+#data$cbwd <- as.factor(as.numeric(data$cbwd))
+data <- data[,-c(1,2,8)] #Quitamos year, momnth, cbwd
+data_scale <- scale(data)
 ```
-
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+summary(data_scale)
+```
 
 ###K-means
 TambiÈn podemos observar que los datos no est·n en la misma escala por lo que tendr
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
-#Quitamos los datos de  year yy month que fueron utilizados en el an·lisis
-data <- data[,-c(1,2)]
-
-
 
 ```
 
@@ -241,6 +241,12 @@ data <- data[,-c(1,2)]
 ###Dendograma
 
 Nota: "Ocupa average linkeage"
+```{r echo = TRUE, warning=FALSE, message=FALSE}
+distance_matrix <- dist(data)
+dendogram_complete <- hclust(distance_matrix,method="complete")
+ggdendrogram(dendogram_complete, rotate=F, size =2)
+
+```
 
 ###Preguntas
 
