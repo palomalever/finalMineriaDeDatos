@@ -55,10 +55,10 @@ Lo que tienes que hacer:
 
 ###IntroducciÃ³n 
 
-La contaminación en el medio ambiente es una consecuencia inmediata de la industrialización y la tecnificación de la vida, a lo largo de los años ha dejado una capa cada vez más densa en las ciudades más pobladas del mundo y se ha convertido en una amenaza para la salud pública y no se han hecho los suficientes cambios en la industria para poder combatir exitosamente este fenómeno.
-Una investigación del Colegio del Medio Ambiente de la Universidad de Nanjing relacionó la contaminación con casi un tercio de todas las muertes que se producen en China, ubicando a la polución en el mismo nivel que fumar tabaco como amenaza para la salud pública
+La contaminaci?n en el medio ambiente es una consecuencia inmediata de la industrializaci?n y la tecnificaci?n de la vida, a lo largo de los a?os ha dejado una capa cada vez m?s densa en las ciudades m?s pobladas del mundo y se ha convertido en una amenaza para la salud p?blica y no se han hecho los suficientes cambios en la industria para poder combatir exitosamente este fen?meno.
+Una investigaci?n del Colegio del Medio Ambiente de la Universidad de Nanjing relacion? la contaminaci?n con casi un tercio de todas las muertes que se producen en China, ubicando a la poluci?n en el mismo nivel que fumar tabaco como amenaza para la salud p?blica
 
-Teniendo un set de datos que contiene información relevante respecto al nivel de contaminación de la ciudad de Behin en 5 años, el objetivo es lograr su agrupación mediante el uso de dos métodos no supervisados de agrpación que son k-means clustering y dendogramas para así poder centrar nuestro análisis de estos en grupos que compartan ciertas características entre sí y conocer qué es lo que los diiferencia
+Teniendo un set de datos que contiene informaci?n relevante respecto al nivel de contaminaci?n de la ciudad de Behin en 5 a?os, el objetivo es lograr su agrupaci?n mediante el uso de dos m?todos no supervisados de agrpaci?n que son k-means clustering y dendogramas para as? poder centrar nuestro an?lisis de estos en grupos que compartan ciertas caracter?sticas entre s? y conocer qu? es lo que los diiferencia
 
 
 ###Datos
@@ -84,13 +84,13 @@ library(stringr)
 setwd(".")
 ```
 
-```{r}
+```{r warning=FALSE}
 set.seed(14)
 #Iovannah
-#data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
+data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
 #Paloma
 
-data <- read_csv("../data/pollution.csv")
+#data <- read_csv("../data/pollution.csv")
 summary(data)
 
 #Eliminamos 2000 valores vacÃ­os que tenÃ­a la base de datos para la variable pw2.5
@@ -101,13 +101,14 @@ data$month <- factor(data$month)
 
 
 variables <- names(data)
-rows <- nrow(data)
+rows <- dim(data)[1]
 
 clases <- sapply(data, function(x) class(x))
 ```
 
-Como podemos observar del primer resumen, pm2.5 es la variable con más NA's. De un set que cuenta con `r rows` observaciones, 2067 son NA's en pm2.5, ese es el `r (2067/rows * 100)`% de los datos, que es muy chico, por lo que para nuestro análisis futuro vamos a quitarlo utilizando el comando na.omit().
+El numero total de observaciones en el dataset es `r rows`
 
+Como podemos observar del primer resumen, pm2.5 es la variable con m?s NA's. De un set que cuenta con `r rows` observaciones, 2067 son NA's en pm2.5, ese es el `r (2067/rows * 100)`% de los datos, que es muy chico, por lo que para nuestro an?lisis futuro vamos a quitarlo utilizando el comando na.omit().
 
 ```{r echo = FALSE, warning = FALSE, message=FALSE}
 #variables categoricas y numericas
@@ -201,16 +202,15 @@ names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
 
 ```
 
-**EstadÃ­stica general, Data Profiling**
-
+**EstadÃ­stica general, Data Profiling*
 ```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
 
 kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 ```
 
 Podemos decir del PM2.5 que es una variable numÃ©rica que va del 0 al 994, con una desviaciÃ³n estÃ¡ndar de 92. AdemÃ¡s, la media de esta variable es 98, lo que significa que los nÃºmeros mayores a 200 deberÃ­an ser alarmantes que estan contenidos en menos del 25% de los datos. 
-La temperatura en Beijing varía mucho a lo largo del año y en las distintas regions, va de  -19°C a 42°C.
-DEWP es el grado de humedad,  va de 10° a 26° normalmente y cualquier valor arriba o abajo puede causar un gran disomfort para el ser humano ya que menor a 10°C incluso menor a 0°C puede ser demasaido seco o mayor a 30°C puede ser asfixiante. En Beijing vemos que va de -40° a 28° lo cual está relacionado con las teperaturas extremas a la sque llega a alcanzar.
+La temperatura en Beijing var?a mucho a lo largo del a?o y en las distintas regions, va de  -19C a 42C.
+DEWP es el grado de humedad, normalmente va de 10 a 26 grados y cualquier valor arriba o abajo puede causar un gran disomfort para el ser humano ya que menor a 10?C incluso menor a 0?C puede ser demasaido seco o mayor a 30?C puede ser asfixiante. En Beijing vemos que va de -40? a 28? lo cual est? relacionado con las teperaturas extremas a la sque llega a alcanzar.
 
 
 ```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
@@ -223,36 +223,716 @@ Tenemos 5 aÃ±os, con una moda del 2013, 12 meses con una moda en Julio y 4 valor
 Preparamos los datos
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
 #data$cbwd <- as.factor(as.numeric(data$cbwd))
-data <- data[,-c(1,2,8)] #Quitamos year, momnth, cbwd
+data <- data[,-c(1,2,8)] #Quitamos year, month, cbwd
 data1 <- data
 data1 %>%
   gather(-pm2.5, key = "some_var_name", value = "numeric_values") %>%
   ggplot(aes(x =  numeric_values, y =  pm2.5)) +
     geom_point() +
     facet_wrap(~ some_var_name, scales = "free")
-
-data_scale <- scale(data)
-
-data2 <- data_scale
-data2 %>%
-  gather(-pm2.5, key = "some_var_name", value = "numeric_values") %>%
-  ggplot(aes(x =  numeric_values, y =  pm2.5)) +
-    geom_point() +
-    facet_wrap(~ some_var_name, scales = "free")
 ```
+
+Al ver los datos podemos observar que la hora no es un dato constante.
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
+data_scale <- scale(data) %>% as.data.frame()
 summary(data_scale)
 ```
 
 ###K-means
-También podemos observar que los datos no están en la misma escala por lo que tendr
+Las variables que mÃ s nos interesan para aplicar el algoritmo son las numericas por lo que quitamos CBWD, aÃ±o y mes.
+
+Â¿CuÃ¡ntos grupos generaste? 
+Para decidir el numero de grupos, hacemos el metodo del codo generando hasta 10 clusters. 
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
+retail_scaled <- data_scale
+
+k_2  <- kmeans(retail_scaled, centers=2, iter.max=10)
+k_3  <- kmeans(retail_scaled, centers=3, iter.max=10)
+k_4  <- kmeans(retail_scaled, centers=4, iter.max=10)
+k_5  <- kmeans(retail_scaled, centers=5, iter.max=10)
+k_6  <- kmeans(retail_scaled, centers=6, iter.max=10)
+k_7  <- kmeans(retail_scaled, centers=7, iter.max=10)
+k_8  <- kmeans(retail_scaled, centers=8, iter.max=10)
+k_9  <- kmeans(retail_scaled, centers=9, iter.max=10)
+k_10 <- kmeans(retail_scaled, centers=10, iter.max=10)
+
+tot_sumsquares <- k_2$totss
+
+elbow_data <- data.frame(clusters = c(2,3,4,5,6,7,8,9,10),
+                         sum_squares =c(k_2$tot.withinss/tot_sumsquares,
+                                        k_3$tot.withinss/tot_sumsquares,
+                                        k_4$tot.withinss/tot_sumsquares,
+                                        k_5$tot.withinss/tot_sumsquares,
+                                        k_6$tot.withinss/tot_sumsquares,
+                                        k_7$tot.withinss/tot_sumsquares,
+                                        k_8$tot.withinss/tot_sumsquares,
+                                        k_9$tot.withinss/tot_sumsquares,
+                                        k_10$tot.withinss/tot_sumsquares
+                                        ))
+
+ggplot(elbow_data, aes(x=clusters, y=sum_squares)) +
+  geom_point() +
+  geom_line() +
+  theme_bw()
+```
+
+Con el metodo del codo vemos que el punto optimo es tener 7 clusters ya que si elijieramos 6 veriamos que aun sigue bajando la suma de cuadrados y con 8 y 9 la diferencia que hay es menor a 0.1.
+
+```{r}
+table(k_7$cluster)
+```
+
+Podemos observar las coordenadas de cada centro: 
+```{r}
+k_7$centers
+```
+
+```{r}
+centroides <- as.data.frame(k_7$centers)
+centroides$center <- "Y"
+centroides$cluster <- "centroide"
+
+data_clustered <- data_scale
+data_clustered$cluster <- k_7$cluster
+data_clustered$center <- "N"
+data_clustered_centroides <- rbind(data_clustered,centroides)
+
+
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$DEWP, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$hour, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$TEMP, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$PRES, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Iws, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Is, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Ir, y=data_clustered_centroides$pm2.5,
+                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+
+
+
+
 
 ```
 
+####Data Profiling
+
+```{r echo = TRUE, warning=FALSE, message=FALSE}
+
+data <- cbind(data,data_clustered$cluster)
+names(data) <- c("hour", "pm2.5", "DEWP", "TEMP", "PRES", "Iws", "Is", "Ir", "cluster")
+
+cluster1 <- filter(data,data$cluster == 1)
+cluster2 <- filter(data,data$cluster == 2)
+cluster3 <- filter(data,data$cluster == 3)
+cluster4 <- filter(data,data$cluster == 4)
+cluster5 <- filter(data,data$cluster == 5)
+cluster6 <- filter(data,data$cluster == 6)
+cluster7 <- filter(data,data$cluster == 7)
+
+```
+
+Cluster 1
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster1[,which(clases %in% c("character", "factor"))]
+numericas <- cluster1[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster1)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster1)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+
+Cluster 2
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster2[,which(clases %in% c("character", "factor"))]
+numericas <- cluster2[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster2)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster2)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+
+Cluster 3
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster3[,which(clases %in% c("character", "factor"))]
+numericas <- cluster3[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster3)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster3)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+Cluster 4
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster4[,which(clases %in% c("character", "factor"))]
+numericas <- cluster4[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster4)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster4)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+
+Cluster 5
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster5[,which(clases %in% c("character", "factor"))]
+numericas <- cluster5[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster5)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster5)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+Cluster 6
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster6[,which(clases %in% c("character", "factor"))]
+numericas <- cluster6[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster6)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster6)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+Cluster 7
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+#variables categoricas y numericas
+categoricas <- cluster7[,which(clases %in% c("character", "factor"))]
+numericas <- cluster7[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(cluster7)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster7)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacÃ­os
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#MÃ­nimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#MÃ¡ximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#DesviaciÃ³n estÃ¡ndar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+```
+
+
+
 
 ###Dendograma
-
 Nota: "Ocupa average linkeage"
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
 distance_matrix <- dist(data)
@@ -260,6 +940,7 @@ distance_matrix <- dist(data)
 #ggdendrogram(dendogram_complete, rotate=F, size =2)
 
 ```
+
 
 ###Preguntas
 
