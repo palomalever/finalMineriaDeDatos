@@ -87,10 +87,10 @@ setwd(".")
 ```{r warning=FALSE}
 set.seed(14)
 #Iovannah
-#data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
+data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
 
 #Paloma
-data <- read_csv("../data/pollution.csv")
+#data <- read_csv("../data/pollution.csv")
 summary(data)
 
 #Eliminamos 2000 valores vacíos que tenía la base de datos para la variable pw2.5
@@ -432,6 +432,22 @@ kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
+Cluster 1: "Final del 2013 con contaminación *medio alta*"
+Año: la mayoría de los datos son del 2013
+Mes: la mayoría son de Octubre (mes 10)
+cbwd: la mayoría son datos que van a cv
+
+hora: la más común es a las 11 pm, 
+pm2.5: va de 140 a 994, con una moda de 227 y el 75% de los datos son menores a 343. (Son datos promedio)
+DEWP: va de -25 a 27, con una moda de 5 y el 75% de los datos es menor a 4. Esto significa que la humedad va a los dos extremos. Pero en general es seco.
+TEMP: va de -16 a 30, con una moda de -3 y el 75% son menores a 11. (Temperaturas bajas, pero no afectan la humedad)
+PRES: va de 997 a 1037, con una moda de 1021 y poca desviación. 
+Iws: va de 0.45 a 111.78, con una moda de 0.89 y el 75% es menor a 5. Por lo que hay poco viento (velocidad del viento).
+Is: va de 0 a 5, con una moda de 0. Por lo que normalmente no hay nieve.
+Ir: va de 0 a 6, con una moda de 0. Esto significa que casi no hay lluvia y como la lluvia disminuye la contaminación, se entiende que más del 75% de los datos tienen un pm2.5 mayor a 230.
+
+
+
 
 Cluster 2
 
@@ -517,6 +533,21 @@ kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
 
+Cluster 2: "Invierno con contaminación *normal*"
+Año: la mayoría son datos del 2012
+Mes: la mayoría son datos de Febrero (mes 2), nota: unicamente hay 4 meses en este cluster
+cbwd: moda SE.
+
+hora: la moda es de 11 am, el 75% son datos antes de las 15:00.
+pm2.5: va de 21 a 453, con una moda de 68 y el 75% de los datos son menores a 133. Esto implica relativamente poca contaminación.
+DEWP: va de -11 a 1, con una moda de -6 y el 75% de los datos son menores a -3. Esto significa que es un clima seco, pero no es extremo.
+TEMP: va de -10 a 1, con una moda de -2 y el 75% de los datos son menores a -2. Esto es entendible por el mes (Febrero en general), además es entendible que la contaminación no sea muy alta, pues en general temperturas bajas implican menos contaminación.
+PRES: va de 1017 a 1041, con una moda de 1020 y continúa habiendo poca varianza.
+Iws: va de 0.45 a 127.84, con una moda de 0.89 y el 75% de los datos tiene valores menores a 66.63. Esto significa que la velocidad del aire es "media", puede contribuir a que la contaminación no sea tan elevada. Ya que en este cluster tiende a no ser mayor al nivel peligroso (pm2.5 = 220).
+Is: va de 6 a 27 horas acumuladas de nieve, (se entiende por ser febrero).
+Ir: no hay horas de lluvia (esto se entiende porque hay nieve, lo que sustituye a la lluvia)
+
+
 Cluster 3
 
 ```{r echo = FALSE, warning = FALSE, message=FALSE}
@@ -599,6 +630,22 @@ names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
 kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
+
+
+Cluster 3: "Madrugada con relativamente poca contaminación y calor"
+Año: la moda es del 2014
+Mes: 7 (verano), 10 meses
+cbwd: moda SE
+
+hora: la moda es 00:00, y el 75% están antes de las 08:00 am.
+pm2.5: va de 1 a 361, con una moda de 77 y el 75% son menores a 132 (relativamente poca contaminación, pocos elementos arriba del pm 2.5 considerado peligroso)
+DEWP: va de -14 a 28, con una moda de 18 y el 75% se encuentran antes del 20. Relativamente humedo.
+TEMP: va de 1 a 32, con moda 23 y el 75% antes de 23. El 50% entre 16 y 23. Esto es entendible por la época del año, calor medio.
+PRES: va de 994 a 1029, es un poco menor a los otros clusters. Sigue habiendo poca varianza.
+Iws: va de 0.45 a 208.79, con moda de 0.89 y el 75% menores a 9.84. Esto implica que hubo viento, pero no de muy altas velocidades.
+Is: No hubo nieve.
+Ir: el 75% de los datos no tuvieron horas de lluvia, pero se registraron hasta 36 horas seguidas de lluvia en algunas observaciones. 
+
 
 Cluster 4
 
@@ -683,6 +730,19 @@ kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
+Cluster 4: "Mucho calor, mucho viento y relativamente poca contaminación en la tarde (verano)"
+Año: moda 2014
+Mes: moda 7 (verano), con 9 meses 
+cbwd: SE
+
+hora: va de 14:00 a 20:00, con una moda de 17:00. Por lo que son datos en la tarde.
+pm2.5: va de 1 a 399, el 75% son menores a 121, moda de 16. Por lo que hay poca contaminación en general. 
+DEWP: va de -18 a 28, alto grado de humedad con moda 17. Humedo.
+TEMP: va de 4 a 42, con una moda de 27. Por lo que son meses de mucho calor, cluster de más calor.1 
+PRES: va de 991 a 1024, moda de 1006, por lo que continúa habiendo poca varianza. 
+Iws: va de 0.45 a 171, con el 75% de los datos menores a 22.8. Sí hubo viento, incluso a veces a velocidades muy altas. Esto podría reducir la contaminación.
+Is: no hubo horas de nieve (se entiende por la temperatura)
+Ir: el 75% de los datos no tuvieron lluvia, pero va de 0 a 8horas de lluvia.
 
 Cluster 5
 
@@ -767,6 +827,22 @@ kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
+
+Cluster 5: "Principio de año, mucho viento, muy seco, en la tarde"
+Año: 2013
+Mes: 3 (9 meses registrados)
+cbwd: NW
+
+hora: 50% de los datos están entre 14:00 y 20:00hrs, por lo que son en la tarde-noche a inicios de año
+pm2.5: va de 2 a 238, el 75% son menores a 90. Esto implica que hubo poca contaminación.
+DEWP: va de -40 a 13. Esto implica un clima *muy* seco. El 75% de los datos es menor a -5.
+TEMP: va de - 18 a 26, con el 75% menor a 11, y una moda de 2. Por lo que hay una gran varianza de temperatura, pero son temperaturas frías en general. Esto podría tener una relación con la baja contaminación.
+PRES: va de 1005 a 1042, con una moda de 1025. Poca varianza. 
+Iws: va de 0.45 a 132.76, con el 75% menor a 30.85. Esto implica que hubo bastante viento.
+Is: en el 75% de los datos no hubo horas de nieve, pero se registraron hasta 5 horas de nieve. Puede relacionarse con la época del año (fin invierno-inicio primavera).
+Ir: en el 75% de los datos no hubo horas de lluvia, pero se registraron hasta 10 horas de lluvia.
+
+
 Cluster 6
 
 ```{r echo = FALSE, warning = FALSE, message=FALSE}
@@ -849,6 +925,21 @@ names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
 kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
+
+Cluster 6: "Inicio de año en la madrugada, muy frío y muy seco contaminación media-baja"
+Año: 2010
+Mes: 1 (inicios de año)
+cbwd: NW
+
+hora: 50% de los datos están entre 3:00 y 8:00hrs. (madrugada)
+pm2.5: va de 2 a 275, el 75% son menores a 106. Poca contaminación, pero más alta que algunos otros.
+DEWP: va de -35 a 9. Moda de -10 y el 75% de los datos es menor a -5. (muy seco)
+TEMP: va de - 18 a 18, con el 75% menor a 3, y una moda de -3. (*Muy* frío, se entiende por la época del año).
+PRES: va de 1007 a 1046, con una moda de 1027. Poca varianza. 
+Iws: va de 0.45 a 127.83, con el 75% menor a 18.77.  (Poco viento)
+Is: en el 75% de los datos no hubo horas de nieve, pero se registraron hasta 5 horas de nieve. 
+Ir: en el 75% de los datos no hubo horas de lluvia, pero se registraron hasta 6 horas de lluvia.
+
 
 Cluster 7
 
@@ -933,7 +1024,19 @@ kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
+Cluster 7: "MUCHISIMO VIENTO"
+Año: moda 2010
+Mes: diciembre, datos de los 11 meses
+cbwd: NW
 
+hora: 50% de los datos están entre 06:00 y 18:00hrs. (horas laborales)
+pm2.5: va de 0 a 276, el 75% son menores a 21. Moda 11. (Poca contaminación)
+DEWP: va de -38 a 13. Moda de -20. El 75% de los datos es menor a -11.  Esto implica un clima *muy* seco
+TEMP: va de - 19 a 29, con el 75% menor a 8, y una moda de -1. Clima frío en general.
+PRES: va de 1001 a 1046, con una moda de 1027. Poca varianza. 
+Iws: va de 109 a 565.49, con el 75% mayor a 150. Esto implica que hay *mucho* viento, es el cluster con el más viento. 
+Is: no hubo nieve (0)
+Ir: en el 75% de los datos no hubo horas de lluvia, pero se registraron hasta 1 hora de lluvia.
 
 
 ###Dendograma
@@ -951,10 +1054,30 @@ distance_matrix <- dist(data)
 1. k-means
 
     + Cuántos grupos generaste, justificación 
-    + Características de cada grupo
+    Generamos 7 grupos basados en la técnica "del codo", ya que al llegar a 7 grupos aún nos proporcionaba bastante información, pero el cambio de 7 a 8 aportaba muy poca.
+    + Características de cada grupo *En la página anterior
     + Centroides obtenidos
+```{r echo = FALSE}
+k_7$centers
+```
     + ¿Cuántos elementos hay por grupo? 
+
+Cluster 1: `r nrow(cluster1)`
+
+Cluster 2: `r nrow(cluster2)`
+
+Cluster 3: `r nrow(cluster3)`
+
+Cluster 4: `r nrow(cluster4)`
+
+Cluster 5: `r nrow(cluster5)`
+
+Cluster 6: `r nrow(cluster6)`
+
+Cluster 7: `r nrow(cluster7)`
+    
     + ¿Los grupos están balanceados? 
+En general sí, pero no están bien balanceados. El cluster 2 tiene muy pocos datos, únicamente 161. Mientras que el mayor (cluster 4) tiene 10,570. En promedio tienen 5,964 observaciones.
     
     
 2. Dendogramas
