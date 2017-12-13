@@ -5,8 +5,8 @@ date: "6/12/2017"
 output: html_document
 ---
 
-#Examen Final MinerÃ­a de Datos Agosto Diciembre 2017
-###14   David Alcalde
+#Examen Final MinerÃ?a de Datos Agosto Diciembre 2017
+###142213   David Alcalde
 ###150074 Iovannah Rudoy
 ###150553 Paloma Lever
 
@@ -55,10 +55,11 @@ Lo que tienes que hacer:
 
 ###IntroducciÃ³n 
 
-La contaminaci?n en el medio ambiente es una consecuencia inmediata de la industrializaci?n y la tecnificaci?n de la vida, a lo largo de los a?os ha dejado una capa cada vez m?s densa en las ciudades m?s pobladas del mundo y se ha convertido en una amenaza para la salud p?blica y no se han hecho los suficientes cambios en la industria para poder combatir exitosamente este fen?meno.
-Una investigaci?n del Colegio del Medio Ambiente de la Universidad de Nanjing relacion? la contaminaci?n con casi un tercio de todas las muertes que se producen en China, ubicando a la poluci?n en el mismo nivel que fumar tabaco como amenaza para la salud p?blica
+La contaminacion es una de las consecuencias inmediatas de la industrializacion y de la tecnificacion de la vida y afecta principalmente al medio ambiente. A lo largo de los años esta ha dejado una densa capa arriba de las ciudades mas pobladas convirtiendola en una amenaza para la salud publica y grandes medidas se han realizado para intentar mantenerla bajo control y combatir exitosamente este fenomeno.
 
-Teniendo un set de datos que contiene informaci?n relevante respecto al nivel de contaminaci?n de la ciudad de Behin en 5 a?os, el objetivo es lograr su agrupaci?n mediante el uso de dos m?todos no supervisados de agrpaci?n que son k-means clustering y dendogramas para as? poder centrar nuestro an?lisis de estos en grupos que compartan ciertas caracter?sticas entre s? y conocer qu? es lo que los diiferencia
+El Colegio de Medio Ambiente de la Unversidad de Nanjing relaciono la contaminacion con casi un tercio de todas las muertes que se producen en China, poniendo a la polucion en el mismo nivel que fumar tabaco. Diversas medidas se han hecho en China para bajar el nivel de polución como lo es establecer politicas de No Circula pra coches de ciertos criterios, prohibir la produccion a empresas que contaminan notablemente por unas horas al dia e incluso invertir mas en centros de investigacion para que encuentren una solucion eficiente a este problema.
+
+Contando con el set de datos que contiene informacion relevante respecto al nivel de contaminacion de la ciudad de Bejing en 5 años, el objetivo es lograr sula agrupacion de los datos mediante el uso de dos metodos no supervisados que son k-means clustering y dendogramas para asi poder centrar nuestro analisis en estos grupos que comparten diversas caracteristicas entre si y reconocer que es lo que los hace unicos como grupos.
 
 
 ###Datos
@@ -86,6 +87,7 @@ setwd(".")
 
 data_prof <- function(d_set){
 totals<-dim(d_set)[1]
+
 #ObtenciÃ³n de las clases de cada columna
 classes <- sapply(d_set, function(x) class(x))
 categoricals <- d_set[,which(classes %in% c("character", "factor"))]
@@ -108,11 +110,11 @@ uniqueness_num <- as.data.frame(uniqueness_num)
 uniqueness_cat <-  round(uniques_cat/totals * 100, 2)
 uniqueness_cat <- as.data.frame(uniqueness_cat)
 
-#Conteo de valores vacÃ­os
+#Conteo de valores vacÃ?os
 nan_num <- sapply(numerics, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
 
-#Se modifica para que lea valores vacÃ­os y no precisamente Na
+#Se modifica para que lea valores vacÃ?os y no precisamente Na
 nan_cat <- sapply(categoricals, function(x) sum(is.na(x)))
 nan_cat <- as.data.frame(nan_cat)
 
@@ -123,7 +125,7 @@ modes_num <- as.data.frame(modes_num)
 modes_cat <- sapply(categoricals, function(x) Moda(x))
 modes_cat <- as.data.frame(modes_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 mins <- sapply(numerics, function(x) min(x))
 mins <- as.data.frame(mins)
 
@@ -151,45 +153,59 @@ third_qtls <- as.data.frame(third_qtls)
 sds <- sapply(numerics, function(x) sd(x))
 sds <- as.data.frame(sds)
 
+
 #Tabla de columnas categÃ³ricas
 df_categoricals <- cbind(uniques_cat, uniqueness_cat, nan_cat, modes_cat)
-names(df_categoricals) <- c("Ãšnicos","Ãšnicos (%)","VacÃ­os","Moda")
+names(df_categoricals) <- c("Unicos","Uniqueness (%)","VacÃ?os","Moda")
+
 
 #Tabla de columnas numÃ©ricas
 df_numericals <- cbind(uniques_num, uniqueness_num, nan_num, mins, maxs, means, medians, modes_num, first_qtls, third_qtls,sds) 
-names(df_numericals) <- c("Ãšnicos","Ãšnicos (%)","VacÃ­os","MÃ­nimo","MÃ¡ximo","Promedio","Mediana","Moda","1er quartil","3er quartil","D. E.")
+names(df_numericals) <- c("Unicos","Uniqueness (%)","VacÃ?os","MÃ?nimo","MÃ¡ximo","Promedio","Mediana","Moda","1er quartil","3er quartil","D. E.")
 return(list(nums=df_numericals, cats=df_categoricals))
 }
 
 
 ```
 
-```{r warning=FALSE}
-set.seed(14)
+
+
+
+
+```{r warning=FALSE,message=FALSE}
 #Iovannah
-data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
+#data <- read_csv('~/Desktop/Mineria_de_datos/pollution.csv')
 
 #Paloma
-#data <- read_csv("../data/pollution.csv")
+data <- read_csv("../data/pollution.csv")
 summary(data)
+rows <- nrow(data)
+```
++ El set de datos cuenta con el siguiente numero de columnas: `r ncol(data)`
++ El set de datos cuenta con las siguientes variables: `r names(data)`
++ El set de datos cuenta con el siguiente numero de observaciones: `r dim(data)[1]`
 
-#Eliminamos 2000 valores vacÃ­os que tenÃ­a la base de datos para la variable pw2.5
+Como podemos observar del primer resumen, pm2.5 es la variable con mas NA's. De un set que cuenta con `r rows` observaciones, 2067 son NA's en pm2.5, ese es el `r (2067/rows * 100)`% de los datos, que es muy chico, por lo que para nuestro an?lisis futuro vamos a quitarlo utilizando el comando na.omit().
+Tambien podemos ver que la variable numero y la variable dia no dan realmente informacion por lo que igual los quitamos antes de hacer un analisis mas detallado. Por requerimientos del trabajo, se nos pidio que quitaramos año, mes, dia y No. pero para hacer el primer data profiling nos importa utilizar las variables año y mes.
+
+```{r warning=FALSE}
+set.seed(142213)
+
+#Eliminamos los NAs para poder hacer el clustering.
 data <- na.omit(data)
-#Sin numero ni dia
+
+#Quitamos numero y dia
 data<- data[,-c(1,4)]
 data$year <- factor(data$year)
 data$month <- factor(data$month)
-variables <- names(data)
-rows <- dim(data)[1]
 
-clases <- sapply(data, function(x) class(x))
 ```
 
-El numero total de observaciones en el dataset es `r rows`
-
-Como podemos observar del primer resumen, pm2.5 es la variable con m?s NA's. De un set que cuenta con `r rows` observaciones, 2067 son NA's en pm2.5, ese es el `r (2067/rows * 100)`% de los datos, que es muy chico, por lo que para nuestro an?lisis futuro vamos a quitarlo utilizando el comando na.omit().
 
 ```{r echo = FALSE, warning = FALSE, message=FALSE}
+
+clases <- sapply(data, function(x) class(x))
+
 #variables categoricas y numericas
 categoricas <- data[,which(clases %in% c("character", "factor"))]
 numericas <- data[,-which(clases %in% c("character", "factor"))]
@@ -214,7 +230,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(data)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -243,7 +259,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -279,14 +295,21 @@ df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
                     mediana, moda_num, primer_cuartil, tercer_cuartil) 
 names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
 
+kable(df_numeric, format.args = list(big.mark=",", scientific=F))
+kable(df_categoric, format.args = list(big.mark=",", scientific = F))
+names(df_categoric)[2]<-"uniqueness"
+
+names(df_numeric)[2]<-"uniqueness"
+
+
 ```
 
-**EstadÃ­stica general, Data Profiling*
+**EstadÃ?stica general, Data Profiling*
 ```{r echo=F, warning=FALSE, error=FALSE, message=FALSE}
 kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 ```
 
-Podemos decir del PM2.5 que es una variable numÃ©rica que va del 0 al 994, con una desviaciÃ³n estÃ¡ndar de 92. AdemÃ¡s, la media de esta variable es 98, lo que significa que los nÃºmeros mayores a 200 deberÃ­an ser alarmantes que estan contenidos en menos del 25% de los datos. 
+Podemos decir del PM2.5 que es una variable numerica que va del 0 al 994, con una desviacion estÃ¡ndar de 92. Ademas, la media de esta variable es 98, lo que significa que los nÃºmeros mayores a 200 deberÃ?an ser alarmantes que estan contenidos en menos del 25% de los datos. 
 La temperatura en Beijing var?a mucho a lo largo del a?o y en las distintas regions, va de  -19C a 42C.
 DEWP es el grado de humedad, normalmente va de 10 a 26 grados y cualquier valor arriba o abajo puede causar un gran disomfort para el ser humano ya que menor a 10?C incluso menor a 0?C puede ser demasaido seco o mayor a 30?C puede ser asfixiante. En Beijing vemos que va de -40? a 28? lo cual est? relacionado con las teperaturas extremas a la sque llega a alcanzar.
 
@@ -298,7 +321,8 @@ kable(df_categoric, format.args = list(big.mark=",", scientific=F))
 
 Tenemos 5 aÃ±os, con una moda del 2013, 12 meses con una moda en Julio y 4 valores para cbwd con una moda de SE (South East).
 
-Preparamos los datos
+Ahora preparamos los datos para hacer clustering, quitamos las variables categoricas que no nos van a servir para hacer los clusters y luego las pondremos haciendo cbind con el dataset que tiene los clusters para  utilizarlas como analisis en el data profiling...
+
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
 #data$cbwd <- as.factor(as.numeric(data$cbwd))
 data_previo <- data
@@ -320,7 +344,7 @@ summary(data_scale)
 ###K-means
 Las variables que mÃ s nos interesan para aplicar el algoritmo son las numericas por lo que quitamos CBWD, aÃ±o y mes.
 
-Â¿CuÃ¡ntos grupos generaste? 
++¿CuÃ¡ntos grupos generaste? 
 Para decidir el numero de grupos, hacemos el metodo del codo generando hasta 10 clusters. 
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
 retail_scaled <- data_scale
@@ -366,6 +390,8 @@ Podemos observar las coordenadas de cada centro:
 k_7$centers
 ```
 
+Para ver la distribucion de los clusters de acuerdo a cada grafica lo que hicimos fue graficar cada punto con respecto a pm2.5 que es la variable que mas nos interesa pra este set de datos. Los colores se van a juntar entre si por que en realidad los clusters que se hicieron fue en 9 dimensiones por lo que al expresarlo en 2 no se va a ver con claridad cómo se eligio cada cluster pero si nos da una idea de como estan con respecto a cada variable.
+
 ```{r}
 centroides <- as.data.frame(k_7$centers)
 centroides$center <- "Y"
@@ -378,31 +404,60 @@ data_clustered_centroides <- rbind(data_clustered,centroides)
 
 
 
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$DEWP, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$DEWP, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
 
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$hour, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$hour, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
 
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$TEMP, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
 
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$TEMP, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$PRES, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
 
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Iws, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Is, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
 
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$PRES, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
-
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Iws, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
-
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Is, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
-
-ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Ir, y=data_clustered_centroides$pm2.5,
-                                    color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",name="Cluster")+ theme_bw()
-
-
-
+ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Ir, 
+                                      y=data_clustered_centroides$pm2.5,
+                                      color= as.factor(cluster), shape=center)) 
+                                      + geom_point() 
+                                      + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster")
+                                      + theme_bw()
 
 
 ```
@@ -457,7 +512,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster1)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -472,7 +527,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -513,9 +568,9 @@ kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
 Cluster 1: "Final del 2013 con contaminaciÃ³n *medio alta*"
-AÃ±o: la mayorÃ­a de los datos son del 2013
-Mes: la mayorÃ­a son de Octubre (mes 10)
-cbwd: la mayorÃ­a son datos que van a cv
+AÃ±o: la mayorÃ?a de los datos son del 2013
+Mes: la mayorÃ?a son de Octubre (mes 10)
+cbwd: la mayorÃ?a son datos que van a cv
 
 hora: la mÃ¡s comÃºn es a las 11 pm, 
 pm2.5: va de 140 a 994, con una moda de 227 y el 75% de los datos son menores a 343. (Son datos promedio)
@@ -557,7 +612,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster2)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -572,7 +627,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -614,8 +669,8 @@ kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 
 
 Cluster 2: "Invierno con contaminaciÃ³n *normal*"
-AÃ±o: la mayorÃ­a son datos del 2012
-Mes: la mayorÃ­a son datos de Febrero (mes 2), nota: unicamente hay 4 meses en este cluster
+AÃ±o: la mayorÃ?a son datos del 2012
+Mes: la mayorÃ?a son datos de Febrero (mes 2), nota: unicamente hay 4 meses en este cluster
 cbwd: moda SE.
 
 hora: la moda es de 11 am, el 75% son datos antes de las 15:00.
@@ -656,7 +711,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster3)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -671,7 +726,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -755,7 +810,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster4)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -770,7 +825,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -820,7 +875,7 @@ pm2.5: va de 1 a 399, el 75% son menores a 121, moda de 16. Por lo que hay poca 
 DEWP: va de -18 a 28, alto grado de humedad con moda 17. Humedo.
 TEMP: va de 4 a 42, con una moda de 27. Por lo que son meses de mucho calor, cluster de mÃ¡s calor.1 
 PRES: va de 991 a 1024, moda de 1006, por lo que continÃºa habiendo poca varianza. 
-Iws: va de 0.45 a 171, con el 75% de los datos menores a 22.8. SÃ­ hubo viento, incluso a veces a velocidades muy altas. Esto podrÃ­a reducir la contaminaciÃ³n.
+Iws: va de 0.45 a 171, con el 75% de los datos menores a 22.8. SÃ? hubo viento, incluso a veces a velocidades muy altas. Esto podrÃ?a reducir la contaminaciÃ³n.
 Is: no hubo horas de nieve (se entiende por la temperatura)
 Ir: el 75% de los datos no tuvieron lluvia, pero va de 0 a 8horas de lluvia.
 
@@ -852,7 +907,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster5)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -867,7 +922,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -916,7 +971,7 @@ cbwd: NW
 hora: 50% de los datos estÃ¡n entre 14:00 y 20:00hrs, por lo que son en la tarde-noche a inicios de aÃ±o
 pm2.5: va de 2 a 238, el 75% son menores a 90. Esto implica que hubo poca contaminaciÃ³n.
 DEWP: va de -40 a 13. Esto implica un clima *muy* seco. El 75% de los datos es menor a -5.
-TEMP: va de - 18 a 26, con el 75% menor a 11, y una moda de 2. Por lo que hay una gran varianza de temperatura, pero son temperaturas frÃ­as en general. Esto podrÃ­a tener una relaciÃ³n con la baja contaminaciÃ³n.
+TEMP: va de - 18 a 26, con el 75% menor a 11, y una moda de 2. Por lo que hay una gran varianza de temperatura, pero son temperaturas frÃ?as en general. Esto podrÃ?a tener una relaciÃ³n con la baja contaminaciÃ³n.
 PRES: va de 1005 a 1042, con una moda de 1025. Poca varianza. 
 Iws: va de 0.45 a 132.76, con el 75% menor a 30.85. Esto implica que hubo bastante viento.
 Is: en el 75% de los datos no hubo horas de nieve, pero se registraron hasta 5 horas de nieve. Puede relacionarse con la Ã©poca del aÃ±o (fin invierno-inicio primavera).
@@ -951,7 +1006,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster6)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -966,7 +1021,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -1006,7 +1061,7 @@ kable(df_numeric, format.args = list(big.mark=",", scientific=F))
 kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 ```
 
-Cluster 6: "Inicio de aÃ±o en la madrugada, muy frÃ­o y muy seco contaminaciÃ³n media-baja"
+Cluster 6: "Inicio de aÃ±o en la madrugada, muy frÃ?o y muy seco contaminaciÃ³n media-baja"
 AÃ±o: 2010
 Mes: 1 (inicios de aÃ±o)
 cbwd: NW
@@ -1014,7 +1069,7 @@ cbwd: NW
 hora: 50% de los datos estÃ¡n entre 3:00 y 8:00hrs. (madrugada)
 pm2.5: va de 2 a 275, el 75% son menores a 106. Poca contaminaciÃ³n, pero mÃ¡s alta que algunos otros.
 DEWP: va de -35 a 9. Moda de -10 y el 75% de los datos es menor a -5. (muy seco)
-TEMP: va de - 18 a 18, con el 75% menor a 3, y una moda de -3. (*Muy* frÃ­o, se entiende por la Ã©poca del aÃ±o).
+TEMP: va de - 18 a 18, con el 75% menor a 3, y una moda de -3. (*Muy* frÃ?o, se entiende por la Ã©poca del aÃ±o).
 PRES: va de 1007 a 1046, con una moda de 1027. Poca varianza. 
 Iws: va de 0.45 a 127.83, con el 75% menor a 18.77.  (Poco viento)
 Is: en el 75% de los datos no hubo horas de nieve, pero se registraron hasta 5 horas de nieve. 
@@ -1049,7 +1104,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(cluster7)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -1064,7 +1119,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -1112,7 +1167,7 @@ cbwd: NW
 hora: 50% de los datos estÃ¡n entre 06:00 y 18:00hrs. (horas laborales)
 pm2.5: va de 0 a 276, el 75% son menores a 21. Moda 11. (Poca contaminaciÃ³n)
 DEWP: va de -38 a 13. Moda de -20. El 75% de los datos es menor a -11.  Esto implica un clima *muy* seco
-TEMP: va de - 19 a 29, con el 75% menor a 8, y una moda de -1. Clima frÃ­o en general.
+TEMP: va de - 19 a 29, con el 75% menor a 8, y una moda de -1. Clima frÃ?o en general.
 PRES: va de 1001 a 1046, con una moda de 1027. Poca varianza. 
 Iws: va de 109 a 565.49, con el 75% mayor a 150. Esto implica que hay *mucho* viento, es el cluster con el mÃ¡s viento. 
 Is: no hubo nieve (0)
@@ -1154,7 +1209,7 @@ porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
 porcentaje_unicos_cat <- round(uniques_cat/(nrow(data_2014)-1) * 100, 2)
 porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
 
-#vacÃ­os
+#vacÃ?os
 
 nan_num <- sapply(numericas, function(x) sum(is.na(x)))
 nan_num <- as.data.frame(nan_num)
@@ -1183,7 +1238,7 @@ moda_num <- as.data.frame(moda_num)
 moda_cat <- sapply(categoricas, function(x) Moda(x))
 moda_cat <- as.data.frame(moda_cat)
 
-#MÃ­nimo
+#MÃ?nimo
 minimo <- sapply(numericas, function(x) min(x))
 minimo <- as.data.frame(minimo)
 
@@ -1274,6 +1329,21 @@ kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c'
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
 
+Cluster 1: "Mayor cluster con más variedad de contaminación, temperatura y horario"
+Año : 2014
+Mes : 3
+CBWD: SE
+
+Hora:  MODA: 2, el 50% de los datos estan entre las 5:00am y las 18pm 
+pm2.5: Los datos van de 2 a 671 con moda= 11 y el 75% de los datos son menores a 135
+DEWP:  El grado de humedad va de -40 a 25 grados con una moda de 18. Lo cual es medianamente húmedo y el 75% de los datos son menores a 15.
+TEMP:  La temperatura va de -13 a 42 grados con una moda de 20, lo cual indica clima cálido con el 75% de los datos menores a 23° 
+PRES:  La presión va de 993 a 1039 con una moda de 1006.
+Iws:   La velocidad del viento va de 0.45 a 230.23 con una moda de 0.89 con el 75% de los datos menores a 16.9 lo cual indica que hay entre medio y bajo viento. 
+Is:    El 75% de los datos no registraron nieve y la máxima cantidad de horas seguidas de nieve registradas son 3. 
+Ir:    El 75% de los datos no registraron lluvia y la máxima cantidad de horas seguidas de lluvia registradas son 7.
+
+
 ####**Grupo 2**
 
 ```{r echo=T, warning=F, error=F, message=F}
@@ -1281,6 +1351,22 @@ dp <- data_prof(filter(data_clusters,grupo == 2))
 kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 10))) 
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
+
+
+Cluster 2: "Vientos más fuertes, moderado a frío, cluster con menor contaminación, menor humedad sin lluvias ni nevadas."
+Año : 2014
+Mes : 12
+CBWD: NW
+
+Hora:  MODA: 13, el 50% de los datos estan entre las 0:00am y las 15:00pm 
+pm2.5: Los datos van de 3 a 60 con moda= 9 y el 75% de los datos son menores a 16. Esto indica que en este grupo hay muy poca contaminación
+DEWP:  El grado de humedad va de -27 a 2 grados con una moda de -20. Lo cual es muy seco, y el 75% de los datos son menores a -12.
+TEMP:  La temperatura va de -9 a 24 grados con una moda de -3, lo cual indica clima bastante frío con el 75% de los datos menores a 13° 
+PRES:  La presión va de 1005 a 1035 con una moda de 1032.
+Iws:   La velocidad del viento va de 156.45 a 441.18 con una moda de 207.41 con el 75% de los datos menores a 318.26 lo cual indica que hay vientos muy fuertes.
+Is:    No hay nieve. 
+Ir:    No hay lluvia.
+
 
 ####**Grupo 3**
 
@@ -1290,6 +1376,21 @@ kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c'
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
 
+
+Cluster 3: "Inicio de año, mucho frío, nieve, viento y media contaminación en la mañana"
+Año :2014
+Mes :2
+CBWD:SE
+
+Hora:  MODA: 9:00, el 50% de los datos estan entre las 9:00am y las 12:0 (son datos de la mañana) 
+pm2.5: Los datos van de 84 a 112 con moda= 84 y el 75% de los datos son menores a 106. Indica contaminación moderada.
+DEWP:  El grado de humedad va de -7 a -6 grados con una moda de -7. Moderadamente seco con muy poca varianza.
+TEMP:  La temperatura va de -5 a -3 grados con una moda de -4, lo cual indica clima bastante frío con el 75% de los datos menores a -3.5° 
+PRES:  La presión va de 1025 a 1029 con una moda de 1029.
+Iws:   La velocidad del viento va de 33.98 a 46-06 con una moda de 33.98 con el 75% de los datos menores a 42.70 lo cual indica que hay alto viento. 
+Is:    Va de 4 a 10, con moda de 4 y el 75% menores a 8.5. Tiene sentido por las temperaturas frías y el viento. 
+Ir:    No hubo lluvia.
+
 ####**Grupo 4**
 
 ```{r echo=T, warning=F, error=F, message=F}
@@ -1298,6 +1399,23 @@ kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c'
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
 
+Cluster 4: "Invierno, frío y nieve con viento moderado en la noche"
+Año :2014
+Mes :2
+CBWD:SE
+
+
+Hora:  MODA: 16:00, el 50% de los datos estan entre las 16:00am y las 19:30pm 
+pm2.5: Los datos van de 98 a 109 con moda= 107 y el 75% de los datos son menores a 108.25. Contaminación moderada.
+DEWP:  El grado de humedad va de -7 a -6. Clima seco con muy poca varianza.
+TEMP:  La temperatura va de -4 a -3. Temperaturas muy bajas con muy poca varianza.
+PRES:  La presión va de 1024 a 1025.
+Iws:   La velocidad del viento va de 47.85 a 63.06 con una moda de 47.85 con el 75% de los datos menores a 59.92 lo cual indica que hay alto viento, pero no es el más alto. 
+Is:    Va de 11 a 18, con moda 11 y 75% de los datos menoresa 16.25
+Ir:    No hay lluvia.
+
+
+
 ####**Grupo 5**
 
 ```{r echo=T, warning=F, error=F, message=F}
@@ -1305,6 +1423,20 @@ dp <- data_prof(filter(data_clusters,grupo == 5))
 kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 10))) 
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
+Cluster 5: "Invierno en la madrugada, cluster con más nieve, menor viento, más frío y contaminación moderada"
+Año :2014
+Mes :2
+CBWD:SE
+
+Hora:  MODA: 00:00, el 50% de los datos estan entre las 1:00am y las 3am 
+pm2.5: Los datos van de 88 a 115 con moda= 88 y el 75% de los datos son menores a 106. Contaminación moderada.
+DEWP:  El grado de humedad va de -7 a -6. Seco con muy poca varianza.
+TEMP:  La temperatura es de -4.
+PRES:  La presión va de 1024-1025.
+Iws:   La velocidad del viento con una moda de 0.89, indica muy poco viento.
+Is:    Moda de 19 horas, con maximo 23 horas. 
+Ir:    No hay lluvia.
+
 
 ####**Grupo 6**
 
@@ -1313,6 +1445,21 @@ dp <- data_prof(filter(data_clusters,grupo == 6))
 kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 10))) 
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
+Cluster 6: "Otoño, lluvioso con moderado viento, cluster con mayor temperatura (templada) y contaminación moderada."
+Año :2014
+Mes :9
+CBWD:NW
+
+
+Hora:  MODA: 4:00, el 50% de los datos estan entre las 4:00am y las 10:00am (mañana)
+pm2.5: Los datos van de 17 a 116 con moda= 21 y el 75% de los datos son menores a 81. Contaminación media baja.
+DEWP:  El grado de humedad va de 7 a 23 grados con una moda de 18. Lo cual es medianamente húmedo y el 75% de los datos son menores a 18. Humedad moderada.
+TEMP:  La temperatura va de 10 a 24 grados con una moda de 11, lo cual indica clima cálido con el 75% de los datos menores a 20. Temperatura moderada. 
+PRES:  La presión va de 1003 a 1019 con una moda de 1009.
+Iws:   La velocidad del viento va de 0.89 a 166.73 con una moda de 1.79 con el 75% de los datos menores a 15.6 lo cual indica que hay entre moderado y bajo viento. 
+Is:    No hay nieve.
+Ir:    De 3 a 13.
+
 
 ####**Grupo 7**
 
@@ -1321,6 +1468,23 @@ dp <- data_prof(filter(data_clusters,grupo == 7))
 kable(dp$nums, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 10))) 
 kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c', 4)))
 ```
+
+Cluster 7: "Otoño, pocacontaminación, temperatura templada y vientos moderados, mayor lluvia."
+Año :2014
+Mes :9
+CBWD:NW
+
+
+Hora:  MODA: 11:00, el 50% de los datos estan entre las 11:00am y las 14:00. Mañana-tarde.
+pm2.5: Los datos van de 8 a 75 con moda= 22 y el 75% de los datos son menores a 39. Contaminación baja.
+DEWP:  El grado de humedad va de 10 a 17 grados con una moda de 10. Lo cual es medianamente húmedo y el 75% de los datos son menores a 17.
+TEMP:  La temperatura va de 12 a 18 grados con una moda de 18, lo cual indica clima templado con el 75% de los datos menores a 18° 
+PRES:  La presión va de 1002 a 1018 con una moda de 1016.
+Iws:   La velocidad del viento va de 0.89 a 26.83 con una moda de 0.89 con el 
+75% de los datos menores a 12.3 lo cual indica que hay entre medio-bajo y alto viento. 
+Is:    No hay nieve.
+Ir:    de 13 a 23, con moda 14. Es el cluster más lluvioso.
+
 
 
 
@@ -1331,7 +1495,7 @@ kable(dp$cats, format.args = list(big.mark=",", scientific=F), align = c(rep('c'
 
     + CuÃ¡ntos grupos generaste, justificaciÃ³n 
     Generamos 7 grupos basados en la tÃ©cnica "del codo", ya que al llegar a 7 grupos aÃºn nos proporcionaba bastante informaciÃ³n, pero el cambio de 7 a 8 aportaba muy poca.
-    + CaracterÃ­sticas de cada grupo *En la pÃ¡gina anterior
+    + CaracterÃ?sticas de cada grupo *En la pÃ¡gina anterior
     + Centroides obtenidos
 ```{r echo = FALSE}
 k_7$centers
@@ -1353,7 +1517,7 @@ Cluster 6: `r nrow(cluster6)`
 Cluster 7: `r nrow(cluster7)`
     
     + Â¿Los grupos estÃ¡n balanceados? 
-En general sÃ­, pero no estÃ¡n bien balanceados. El cluster 2 tiene muy pocos datos, Ãºnicamente 161. Mientras que el mayor (cluster 4) tiene 10,570. En promedio tienen 5,964 observaciones.
+En general sÃ?, pero no estÃ¡n bien balanceados. El cluster 2 tiene muy pocos datos, Ãºnicamente 161. Mientras que el mayor (cluster 4) tiene 10,570. En promedio tienen 5,964 observaciones.
     
     
 2. Dendogramas
@@ -1364,10 +1528,10 @@ En general sÃ­, pero no estÃ¡n bien balanceados. El cluster 2 tiene muy pocos da
     + Â¿Los grupos estÃ¡n balanceados? 
     NO
     
-    + CaracterÃ­sticas de cada grupo
+    + CaracterÃ?sticas de cada grupo
     
     
-3. Diferencias entre las caracterÃ­sticas de cada grupo
+3. Diferencias entre las caracterÃ?sticas de cada grupo
 
 
 ###Conclusiones
