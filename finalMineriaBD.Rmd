@@ -1042,9 +1042,122 @@ Ir: en el 75% de los datos no hubo horas de lluvia, pero se registraron hasta 1 
 ###Dendograma
 Nota: "Ocupa average linkeage"
 ```{r echo = TRUE, warning=FALSE, message=FALSE}
-distance_matrix <- dist(data)
+data_2014 <- filter(data_previo,year==2014)
+
+```
+
+
+*Data profiling data_2014
+
+```{r echo = FALSE, warning = FALSE, message=FALSE}
+#variables categoricas y numericas
+categoricas <- data_2014[,which(clases %in% c("character", "factor"))]
+numericas <- data_2014[,-which(clases %in% c("character", "factor"))]
+
+#cardinalidad
+uniques_num <- sapply(numericas, function(x) unique(x) %>% length())
+uniques_num <- as.data.frame(uniques_num)
+
+uniques_cat <- sapply(categoricas, function(x) unique(x) %>% length())
+uniques_cat <- as.data.frame(uniques_cat)
+
+#valores unicos
+
+valores_unicos_num <- sapply(numericas, function(x) unique(x))
+hvalores_unicos_cat <- sapply(categoricas, function(x) unique(x))
+
+#uniqueness
+
+porcentaje_unicos_num <-  round(uniques_num/(nrow(data_2014)-1) * 100, 2)
+porcentaje_unicos_num <- as.data.frame(porcentaje_unicos_num)
+
+porcentaje_unicos_cat <- round(uniques_cat/(nrow(data_2014)-1) * 100, 2)
+porcentaje_unicos_cat$lk <- as.data.frame(porcentaje_unicos_cat)
+
+#vacíos
+
+nan_num <- sapply(numericas, function(x) sum(is.na(x)))
+nan_num <- as.data.frame(nan_num)
+
+nan_cat <- sapply(categoricas, function(x) sum(is.na(x)))
+nan_cat <- as.data.frame(nan_cat)
+
+#Función de Moda
+Moda <- function(x){
+  if (class(x) %in% c("character", "factor")) {
+    table(x) %>%
+      which.max() %>%
+      names()
+  }
+  else {
+    table(round(x, 2)) %>%
+      which.max() %>%
+      names()
+  }
+}
+
+#moda
+moda_num <- sapply(numericas, function(x) Moda(x))
+moda_num <- as.data.frame(moda_num)
+
+moda_cat <- sapply(categoricas, function(x) Moda(x))
+moda_cat <- as.data.frame(moda_cat)
+
+#Mínimo
+minimo <- sapply(numericas, function(x) min(x))
+minimo <- as.data.frame(minimo)
+
+#Máximo
+maximo <- sapply(numericas, function(x) max(x))
+maximo <- as.data.frame(maximo)
+
+#Promedio
+promedio <- sapply(numericas, function(x) mean(x))
+promedio <- as.data.frame(promedio)
+
+#Mediana
+mediana <- sapply(numericas, function(x) median(x))
+mediana <- as.data.frame(mediana)
+
+#Primer cuartil
+primer_cuartil <- sapply(numericas, function(x) quantile(x)[2]) 
+primer_cuartil <- as.data.frame(primer_cuartil)
+
+#Tercer cuartil
+tercer_cuartil <- sapply(numericas, function(x) quantile(x)[4]) 
+tercer_cuartil <- as.data.frame(tercer_cuartil)
+
+#Desviación estándar
+desvest <- sapply(numericas, function(x) sd(x))
+desvest <- as.data.frame(desvest)
+
+#Tabla de data profiling
+df_categoric <- cbind(uniques_cat, nan_cat, moda_cat)
+names(df_categoric) <- str_replace_all(names(df_categoric), "_cat", "")
+
+df_numeric <- cbind(uniques_num, nan_num, minimo, maximo, promedio, desvest,
+                    mediana, moda_num, primer_cuartil, tercer_cuartil) 
+names(df_numeric) <- str_replace_all(names(df_numeric), "_num", "")
+
+```
+
+```{r echo = FALSE}
+kable(df_categoric)
+kable(df_numeric)
+```
+
+```{r echo = TRUE, warning=FALSE, message=FALSE}
+data_2014 <- data_2014[,-c(1,2,8)]
+data_2014_scaled <- scale(data_2014) %>% as.data.frame()
+
+distance_matrix <- dist(data_2014_scaled)
+
+
 #dendogram_complete <- hclust(distance_matrix,method="complete")
 #ggdendrogram(dendogram_complete, rotate=F, size =2)
+
+
+
 
 ```
 
