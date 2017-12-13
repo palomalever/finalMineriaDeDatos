@@ -406,59 +406,38 @@ data_clustered_centroides <- rbind(data_clustered,centroides)
 
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$DEWP, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
 
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$hour, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
 
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$TEMP, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
 
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$PRES, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
 
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Iws, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
+
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Is, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
 
 ggplot(data_clustered_centroides, aes(x=data_clustered_centroides$Ir, 
                                       y=data_clustered_centroides$pm2.5,
-                                      color= as.factor(cluster), shape=center)) 
-                                      + geom_point() 
-                                      + scale_color_brewer(palette="Spectral",
-                                                           name="Cluster")
-                                      + theme_bw()
-
+                                      color= as.factor(cluster), shape=center)) + geom_point() + scale_color_brewer(palette="Spectral",
+                                                           name="Cluster") + theme_bw()
 
 ```
 
