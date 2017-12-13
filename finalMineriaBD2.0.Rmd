@@ -26,7 +26,7 @@ output: html_document
 
 ###Tema
 
-A nuestro equipo le fue asignado el siguiente tema (tema 2) en la clase del 4 de Diciembre del 2017
+fA nuestro equipo le fue asignado el siguiente tema (tema 2) en la clase del 4 de Diciembre del 2017
 
 #### AgrupaciÃ³n
 
@@ -1512,6 +1512,10 @@ En general sÃ?, pero no estÃ¡n bien balanceados. El cluster 2 tiene muy pocos da
     
 3. Diferencias entre las caracterÃ?sticas de cada grupo
 
+La primer diferencia que podemos encontrar entre los 2 modelos, es que en los k-means cada uno de los clusters contenía un número de nodos, si bien no totalmente balanceados, pero la diferencia númerica entre ellos no fue tan relevante. En cambio, en los dendogramas pudimos ver que encontrar 1 punto balanceado que no requiera de un número excesivo de clusters era básicamente imposible. Como se puede observar en el gráfico del dendograma que creamos, pues esto crea un sesgo dando como resultado que casi la totalidad de las observaciones cayeran en un solo cluster dejando a los demás con solo unas cuantas.
+Por lo tanto, los grupos creados con k-means nos ofrecen mucha más confiabilidad al momento de agrupar los datos, sin embargo, el modelo generado por los dendogramas cuenta con grupos que pueden representar temperaturas más extremas, y que se encuentran con valores de las distintas variables mucho más agrupados.  
+
+En consecuencia, creemos que cada modelo puede ocuparse para diferentes funciones. El k-means nos permitió agrupar observaciones con características similares, pero con variaciones mucho mayores, en cambio, los dendogramas nos permitieron nidentificar pequeños puntos, en los cuales la información destacaba en gran medida a la gran mayoría de las mismas, por lo tanto, con este modelo podríamos identificar observaciones muy especiales, pero, para ciertos propósitos generales, su uso podría no tener ningún beneficio.
 
 ###Conclusiones
 
