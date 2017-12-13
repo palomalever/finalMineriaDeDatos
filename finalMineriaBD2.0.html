@@ -1859,7 +1859,7 @@ cluster7 &lt;- filter(data,data$cluster == 7)</code></pre>
 </table>
 <div id="caracteristicas-de-cada-cluster" class="section level5">
 <h5>Características de cada cluster</h5>
-<p>Cluster 1: “Final del 2013 con contaminación <em>mala-muy mala-peligrosa</em>” Año: la mayor??a de los datos son del 2013 Mes: la mayor??a son de Octubre (mes 10) cbwd: la mayor??a son datos que van a cv</p>
+<p>Cluster 1: “Final del 2013 con contaminación <em>mala-muy mala-peligrosa</em>” Año: la mayoría de los datos son del 2013 Mes: la mayoría son de Octubre (mes 10) cbwd: la mayoría son datos que van a cv</p>
 <p>hora: la más común es a las 11 pm, pm2.5: va de 140 a 994, con una moda de 227 y el 75% de los datos son menores a 343. (Son datos promedio) DEWP: va de -25 a 27, con una moda de 5 y el 75% de los datos es menor a 4. Esto significa que la humedad va a los dos extremos. Pero en general es seco. TEMP: va de -16 a 30, con una moda de -3 y el 75% son menores a 11. (Temperaturas bajas, pero no afectan la humedad) PRES: va de 997 a 1037, con una moda de 1021 y poca desviación. Iws: va de 0.45 a 111.78, con una moda de 0.89 y el 75% es menor a 5. Por lo que hay poco viento (velocidad del viento). Is: va de 0 a 5, con una moda de 0. Por lo que normalmente no hay nieve. Ir: va de 0 a 6, con una moda de 0. Esto significa que casi no hay lluvia y como la lluvia disminuye la contaminación, se entiende que más del 75% de los datos tienen un pm2.5 mayor a 230.</p>
 <p>Cluster 2: “Invierno con contaminación <em>moderada-mala</em>” Año: la mayor??a son datos del 2012 Mes: la mayor??a son datos de Febrero (mes 2), nota: unicamente hay 4 meses en este cluster cbwd: moda SE.</p>
 <p>hora: la moda es de 11 am, el 75% son datos antes de las 15:00. pm2.5: va de 21 a 453, con una moda de 68 y el 75% de los datos son menores a 133. Esto implica relativamente poca contaminación. DEWP: va de -11 a 1, con una moda de -6 y el 75% de los datos son menores a -3. Esto significa que es un clima seco, pero no es extremo. TEMP: va de -10 a 1, con una moda de -2 y el 75% de los datos son menores a -2. Esto es entendible por el mes (Febrero en general), además es entendible que la contaminación no sea muy alta, pues en general temperturas bajas implican menos contaminación. PRES: va de 1017 a 1041, con una moda de 1020 y continúa habiendo poca varianza. Iws: va de 0.45 a 127.84, con una moda de 0.89 y el 75% de los datos tiene valores menores a 66.63. Esto significa que la velocidad del aire es “media”, puede contribuir a que la contaminación no sea tan elevada. Ya que en este cluster tiende a no ser mayor al nivel peligroso (pm2.5 = 220). Is: va de 6 a 27 horas acumuladas de nieve, (se entiende por ser febrero). Ir: no hay horas de lluvia (esto se entiende porque hay nieve, lo que sustituye a la lluvia)</p>
@@ -3395,7 +3395,55 @@ Se encuentran en la pestaña anterior</code></pre>
 <div id="conclusiones" class="section level3">
 <h3>Conclusiones</h3>
 <p>En los dendogramas fue donde obtuvimos dos cluster que únicamente contenían observaciones con contaminación buena o moderada, por lo que consideramos que éstos tienen las características que más probablemente indicarán que un día será saludable en Beijing. Estas características, como pensamos al inicio del análisis tienen que ver con vientos altos, temperaturas moderadas y lluvia.</p>
-<p>Además, los clusters que contenían los datos más peligrosos de pm2.5 fueron</p>
+<p>Además, los clusters que contenían los datos más peligrosos de pm2.5 fueron días con poco viento, poca humedad y calurosos.</p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.3.3 (2017-03-06)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
+## Running under: OS X Yosemite 10.10.5
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] bindrcpp_0.2    ggdendro_0.1-20 lubridate_1.7.1 MLmetrics_1.1.1
+##  [5] rpart_4.1-10    knitr_1.17      caret_6.0-77    lattice_0.20-34
+##  [9] ROCR_1.0-7      gplots_3.0.1    C50_0.1.0-24    class_7.3-14   
+## [13] plotly_4.7.1    forcats_0.2.0   stringr_1.2.0   dplyr_0.7.4    
+## [17] purrr_0.2.4     tidyr_0.7.2     tibble_1.3.4    ggplot2_2.2.1  
+## [21] tidyverse_1.2.1 readr_1.1.1    
+## 
+## loaded via a namespace (and not attached):
+##  [1] nlme_3.1-131       bitops_1.0-6       RColorBrewer_1.1-2
+##  [4] dimRed_0.1.0       httr_1.3.1         rprojroot_1.2     
+##  [7] tools_3.3.3        backports_1.1.0    R6_2.1.3          
+## [10] KernSmooth_2.23-15 lazyeval_0.2.0     colorspace_1.2-6  
+## [13] nnet_7.3-12        withr_2.0.0        tidyselect_0.2.0  
+## [16] mnormt_1.5-5       cli_1.0.0          rvest_0.3.2       
+## [19] xml2_1.1.1         labeling_0.3       caTools_1.17.1    
+## [22] scales_0.5.0       sfsmisc_1.1-1      DEoptimR_1.0-8    
+## [25] psych_1.7.8        robustbase_0.92-7  digest_0.6.10     
+## [28] foreign_0.8-67     rmarkdown_1.6      pkgconfig_2.0.1   
+## [31] htmltools_0.3.6    highr_0.6          htmlwidgets_0.9   
+## [34] rlang_0.1.4        readxl_1.0.0       ddalpha_1.3.1     
+## [37] rstudioapi_0.7     bindr_0.1          jsonlite_1.5      
+## [40] gtools_3.5.0       ModelMetrics_1.1.0 magrittr_1.5      
+## [43] Matrix_1.2-8       Rcpp_0.12.14       munsell_0.4.3     
+## [46] partykit_1.0-5     stringi_1.1.1      yaml_2.1.14       
+## [49] MASS_7.3-45        plyr_1.8.4         recipes_0.1.0     
+## [52] grid_3.3.3         parallel_3.3.3     gdata_2.18.0      
+## [55] crayon_1.3.4       haven_1.1.0        splines_3.3.3     
+## [58] hms_0.3            reshape2_1.4.1     codetools_0.2-15  
+## [61] stats4_3.3.3       CVST_0.2-1         glue_1.1.1        
+## [64] evaluate_0.10.1    data.table_1.10.4  modelr_0.1.1      
+## [67] foreach_1.4.3      cellranger_1.1.0   gtable_0.2.0      
+## [70] kernlab_0.9-25     assertthat_0.1     DRR_0.0.2         
+## [73] gower_0.1.2        prodlim_1.6.1      broom_0.4.3       
+## [76] survival_2.40-1    viridisLite_0.2.0  timeDate_3012.100 
+## [79] RcppRoll_0.2.2     iterators_1.0.8    lava_1.5.1        
+## [82] ipred_0.9-6</code></pre>
 </div>
 </div>
 </div>

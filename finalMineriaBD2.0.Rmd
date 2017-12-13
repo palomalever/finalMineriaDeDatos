@@ -1059,9 +1059,9 @@ kable(df_categoric, format.args = list(big.mark=",", scientific = F))
 #####Características de cada cluster
 
 Cluster 1: "Final del 2013 con contaminación *mala-muy mala-peligrosa*"
-Año: la mayor??a de los datos son del 2013
-Mes: la mayor??a son de Octubre (mes 10)
-cbwd: la mayor??a son datos que van a cv
+Año: la mayoría de los datos son del 2013
+Mes: la mayoría son de Octubre (mes 10)
+cbwd: la mayoría son datos que van a cv
 
 hora: la más común es a las 11 pm, 
 pm2.5: va de 140 a 994, con una moda de 227 y el 75% de los datos son menores a 343. (Son datos promedio)
@@ -1546,4 +1546,8 @@ En consecuencia, creemos que cada modelo puede ocuparse para diferentes funcione
 
 En los dendogramas fue donde obtuvimos dos cluster que únicamente contenían observaciones con contaminación buena o moderada, por lo que consideramos que éstos tienen las características que más probablemente indicarán que un día será saludable en Beijing. Estas características, como pensamos al inicio del análisis tienen que ver con vientos altos, temperaturas moderadas y lluvia. 
 
-Además, los clusters que contenían los datos más peligrosos de pm2.5 fueron 
+Además, los clusters que contenían los datos más peligrosos de pm2.5 fueron días con poco viento, poca humedad y calurosos. 
+
+```{r}
+sessionInfo()
+```
